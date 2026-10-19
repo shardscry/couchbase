@@ -3,6 +3,7 @@
 The first standalone release of the CouchBase Crystal shard carries forward
 all driver features through CryBase 0.0.5. Applications now use
 `require "couchbase"` and the top-level `CouchBase` namespace.
+It also includes a standalone Kemal users API and independent CLI examples.
 
 ## Connections and transport
 
@@ -51,18 +52,42 @@ all driver features through CryBase 0.0.5. Applications now use
 
 ## Examples, tests, and documentation
 
-- Ten runnable examples cover endpoint probes, KV operations and pooling,
-  seed failover, expiration, Query basics, prepared statements, cursors,
-  mutations, and retry policy arguments, with shared configuration and models.
+- Eleven standalone example applications each provide their own manifest,
+  lockfile, README, and local types. They use the published CouchBase shard
+  without shared example code and can be copied outside this repository.
+- The Kemal HTTP API implements UUID-keyed user CRUD at `/users`, JSON input
+  validation, SQL++ pagination with named LIMIT/OFFSET parameters, a separate
+  count query, and `RequestPlus` consistency for completed KV writes.
+- The API separates routing, handlers, pure user entities, request structs,
+  configuration, and repositories implementing `CouchbaseStore(T)`. Athena
+  wires dependencies through one application container; each concrete handler
+  declares `inject user_repository` and includes HTTP helpers from a `Base`
+  module. In-memory tests replace the repository binding without opening real
+  database connections.
+- Local Docker Compose initializes Couchbase; repeatable SQL++ index setup and
+  documented environment variables support local development.
+- HTTP specs run with both an in-memory repository and real Couchbase, covering
+  CRUD, UUID keys, validation, pagination boundaries, ordering, and totals.
+  Database specs also verify physical UUID keys, SQL++ visibility after KV
+  changes, and exclusion of unrelated documents.
+- Ten CLI examples cover endpoint probes, KV operations and pooling, seed
+  failover, expiration, Query basics, prepared statements, cursors, mutations,
+  and retry policy arguments. Each example owns its configuration and models,
+  seeds its own data when needed, and cleans up its document keys.
 - Unit specs and real Couchbase integration specs are migrated to `CouchBase`.
+  Query fixtures live under `spec/helpers`, independent of runnable examples.
   CI retains Community 7.6/8.0 integration jobs, Enterprise 7.6/8.0 Query TLS
-  jobs, and Community Query TLS coverage through an nginx proxy.
+  jobs, and Community Query TLS coverage through an nginx proxy. It also builds
+  each standalone example and runs the HTTP specs, real database API specs,
+  and CLI examples.
 - Installation, quick-start, KV, Query, and glossary manuals accompany
   generated API documentation. Formatting, Ameba, coverage tooling, and local
   commit hooks are retained.
 - Ameba 1.7 supports dependency installation with Crystal 1.21.
 - Coverage CI uses Ubuntu 24.04 with a cached kcov 43 source build for
   compatibility with the current Crystal toolchain.
+- Tag-driven publishing checks manifest and source versions and updates an
+  existing release when the same version tag is replaced.
 
 ## Migration
 

@@ -28,7 +28,14 @@ jobs:
           GH_REPO: ${{ github.repository }}
           RELEASE_TAG: ${{ github.ref_name }}
         run: |
-          gh release create "$RELEASE_TAG" \
+          release_action=create
+          if gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
+            release_action=edit
+          fi
+
+          gh release "$release_action" "$RELEASE_TAG" \
             --verify-tag \
+            --latest \
+            --target "$GITHUB_SHA" \
             --title "CouchBase $RELEASE_TAG" \
             --notes-file RELEASE_NOTES.md

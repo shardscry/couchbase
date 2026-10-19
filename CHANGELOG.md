@@ -7,11 +7,34 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.0.5] - 2026-10-19
+
+### Standalone release
+- Extracted the complete Couchbase driver into `shardscry/couchbase`, retaining
+  all features through the source project's version 0.0.5.
+- Replaced `CryBase::CouchBase` with `CouchBase` and moved shared connectivity,
+  interfaces, and version state into the standalone namespace.
+- Migrated every example, unit/integration spec, manual, hook, and CI job.
+- Added [cumulative release notes](RELEASE_NOTES.md) covering the full driver
+  feature set, migration steps, and current limitations.
+- Added tag-driven GitHub release publishing with manifest/version checks and
+  updates to an existing release when its tag is replaced.
+- Updated the Ameba development dependency to 1.7 for Crystal 1.21 compatibility.
+- Moved coverage CI to Ubuntu 24.04 and cached a pinned kcov 43 source build to
+  resolve linker errors from the current Crystal distribution on Ubuntu 22.04.
+
 ### Added
 - Standalone `examples/kemal_api` with UUID-keyed user CRUD, SQL++ pagination,
   Docker database setup, and HTTP specs that also run against real Couchbase.
 - Per-example manifests, lockfiles, local models, and run instructions for
   every CLI example.
+- `KV::BucketConfig`, `KV::BucketConfigClient`, and Management bucket config
+  discovery so KV clients can hash document keys with a bucket-specific
+  `numVBuckets` value.
+- `vbucket_count:` and `discover_bucket_config:` options on
+  `KV::Client.from_string`, `KV::Pool.from_string`, and
+  `KV::Cluster.from_string` for callers that need explicit vbucket-count
+  control.
 
 ### Changed
 - Rebuilt examples as independent applications beside `kemal_api`; removed
@@ -29,32 +52,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `inject user_repository`, exposing `@user_repository` without manual constructors.
 - Made `Handlers::Base` an includable HTTP helper module and separated shared
   UUID lookup into `Handlers::UserLookup`.
-
-## [0.0.5] - 2026-10-19
-
-### Standalone release
-- Extracted the complete Couchbase driver into `shardscry/couchbase`, retaining
-  all features through the source project's version 0.0.5.
-- Replaced `CryBase::CouchBase` with `CouchBase` and moved shared connectivity,
-  interfaces, and version state into the standalone namespace.
-- Migrated every example, unit/integration spec, manual, hook, and CI job.
-- Added [cumulative release notes](RELEASE_NOTES.md) covering the full driver
-  feature set, migration steps, and current limitations.
-- Added tag-driven GitHub release publishing with manifest/version checks.
-- Updated the Ameba development dependency to 1.7 for Crystal 1.21 compatibility.
-- Moved coverage CI to Ubuntu 24.04 and cached a pinned kcov 43 source build to
-  resolve linker errors from the current Crystal distribution on Ubuntu 22.04.
-
-### Added
-- `KV::BucketConfig`, `KV::BucketConfigClient`, and Management bucket config
-  discovery so KV clients can hash document keys with a bucket-specific
-  `numVBuckets` value.
-- `vbucket_count:` and `discover_bucket_config:` options on
-  `KV::Client.from_string`, `KV::Pool.from_string`, and
-  `KV::Cluster.from_string` for callers that need explicit vbucket-count
-  control.
-
-### Changed
 - `KV::Client.from_string`, `KV::Pool.from_string`, and
   `KV::Cluster.from_string` now discover bucket vbucket counts from Management
   by default, falling back to the historical 1024-vbucket default when bucket
