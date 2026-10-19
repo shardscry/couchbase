@@ -1,0 +1,239 @@
+# Changelog
+
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [Unreleased]
+
+## [0.0.5] - 2026-10-19
+
+### Standalone release
+- Extracted the complete Couchbase driver into `shardscry/couchbase`, retaining
+  all features through the source project's version 0.0.5.
+- Replaced `CryBase::CouchBase` with `CouchBase` and moved shared connectivity,
+  interfaces, and version state into the standalone namespace.
+- Migrated every example, unit/integration spec, manual, hook, and CI job.
+- Added [cumulative release notes](RELEASE_NOTES.md) covering the full driver
+  feature set, migration steps, and current limitations.
+- Added tag-driven GitHub release publishing with manifest/version checks.
+- Updated the Ameba development dependency to 1.7 for Crystal 1.21 compatibility.
+
+### Added
+- `KV::BucketConfig`, `KV::BucketConfigClient`, and Management bucket config
+  discovery so KV clients can hash document keys with a bucket-specific
+  `numVBuckets` value.
+- `vbucket_count:` and `discover_bucket_config:` options on
+  `KV::Client.from_string`, `KV::Pool.from_string`, and
+  `KV::Cluster.from_string` for callers that need explicit vbucket-count
+  control.
+
+### Changed
+- `KV::Client.from_string`, `KV::Pool.from_string`, and
+  `KV::Cluster.from_string` now discover bucket vbucket counts from Management
+  by default, falling back to the historical 1024-vbucket default when bucket
+  config cannot be loaded.
+- `KV::Client`, `KV::Pool`, and `KV::Cluster` now keep configurable
+  `vbucket_count` state for document, expiration, counter, and typed value
+  operations.
+- `shard.yml` and `CouchBase::VERSION` were bumped to `0.0.5`.
+
+### Fixed
+- Fixed `NotMyVbucket` routing failures for Couchbase buckets that report a
+  `numVBuckets` value other than 1024.
+
+## [0.0.4] - 2026-07-04
+
+### Added
+- `CouchBase::Query::Client` for authenticated N1QL/SQL++ statements
+  over the Couchbase HTTP Query service.
+- `CouchBase::Query::Cluster` for seed failover across Query service
+  endpoints.
+- `CouchBase::Query::Topology` for parsing Query endpoints from
+  Couchbase `nodeServices` payloads.
+- `CouchBase::Query::TopologyClient` for authenticated Query topology
+  loading from Couchbase Management.
+- `Query::Cluster#refresh_topology` for explicit Query node topology refresh.
+- `CouchBase::Query::PreparedStatement` for prepared Query plan names
+  and metadata.
+- `Query::Client#prepare`, `Query::Client#execute_prepared`,
+  `Query::Cluster#prepare`, and `Query::Cluster#execute_prepared`.
+- `query(..., adhoc: false)` for prepared statement caching and execution.
+- `CouchBase::Query::QueryContext` for bucket/scope Query contexts.
+- `Query::Client#bucket`, `Query::Cluster#bucket`, `Query::BucketContext`, and
+  `Query::ScopeContext` for chainable bucket/scope Query context helpers.
+- `Query::Client#bucket=`, `Query::Client#scope=`,
+  `Query::Cluster#bucket=`, `Query::Cluster#scope=`, and Query connection
+  string bucket paths for connection-level Query context defaults.
+- `Query::Client#query_as`, `Query::Client#query_each`,
+  `Query::Client#query_each_as`, and the matching `Query::Cluster` helpers for
+  typed and streamed Query rows.
+- `Query::Client#query_cursor`, `Query::Cluster#query_cursor`, and
+  `Query::Cursor#each_as` for single-use streaming Query cursors.
+- `CouchBase::Policies::RetryPolicy`, the
+  `CouchBase::RetryPolicy` alias, and per-query `retry_policy:`
+  arguments on `Query::Client#query` and `Query::Cluster#query`, defaulting to
+  `CouchBase::RetryPolicy.no_retry`.
+- `CouchBase::Connectivity` for shared plaintext TCP and TLS socket construction
+  used by service-specific clients.
+- `CouchBase::Connectivity::HostPort.parse` for strict host-port string parsing.
+- `CouchBase::Connectivity::SocketConfig` for shared timeout and TLS socket
+  options.
+- `CouchBase::Connectivity::TCPSocket.open(host_port)` for host-port strings
+  such as `127.0.0.1:12345`.
+- `CouchBase::Connectivity::TLSSocket.open(host_port, config)` for TLS sockets
+  from host-port strings such as `127.0.0.1:12345`.
+- `CouchBase::Connectivity::HTTPClient.open` for authenticated reusable HTTP
+  client construction over Connectivity sockets.
+- `CouchBase::Connectivity.open_socket(host_port, config)` for shared plaintext
+  or TLS sockets from host-port strings such as `127.0.0.1:12345`.
+- `KV::Client#scope`, `KV::Pool#scope`, `KV::Cluster#scope`,
+  `KV::ScopeContext`, and `KV::CollectionContext` for scoped collection KV
+  operations.
+- `KV::Client#bucket=`, `KV::Pool#bucket=`, `KV::Cluster#bucket=`,
+  `scope=`, `collection=`, and `collection(name)` for connection-level KV
+  bucket/scope/collection defaults and current-scope collection contexts.
+- Collection-aware KV key encoding and collection manifest lookup for scoped
+  collection operations.
+- Query result parsing for rows, metadata, warnings, and errors.
+- `examples/query_basics/example.cr` for a readonly parameterized Query
+  service call.
+- `examples/query_cursor/example.cr` for streaming typed Query rows through
+  `query_cursor`.
+- `examples/query_prepared/example.cr` for prepared Query execution.
+- `examples/query_retry_policy/example.cr` for passing explicit
+  `CouchBase::RetryPolicy` values to Query calls.
+- `examples/query_mutations/example.cr` for raw SQL++ `INSERT`, `UPDATE`,
+  `DELETE`, `UPSERT`, and `SET ... FOR ... END` mutation statements through
+  Query.
+- `examples/shared/methods.cr` and `examples/shared/methods/*.cr` for shared
+  connection builders and seeded Query example helpers.
+- `examples/shared/structs.cr` and `examples/shared/structs/*.cr` for shared
+  example document and row types under `CouchBaseExamples::Structs`.
+- `examples/shared/ulid.cr` for timestamp-based ULID keys in runnable
+  examples.
+- Real Couchbase Query integration specs that seed deterministic example
+  `type = "User"` documents over KV and query them through direct and prepared
+  Query execution, explicit retry policies, and a dedicated cursor integration
+  spec.
+- Real Couchbase Query TLS integration coverage in CI for Couchbase Enterprise
+  7.6 and 8.0, including data seeded and queried through the Query service.
+- Real Couchbase Community Query TLS integration coverage through an nginx TLS
+  reverse proxy in CI.
+- Real Couchbase KV integration coverage for default scoped collection
+  operations.
+
+### Changed
+- `Query::QueryContext.new` now uses named `bucket:`, optional `scope:`, and
+  optional `namespace:` arguments; `namespace:` defaults to `"default"`.
+- README now links to the feature implementation notes.
+- CI now runs Couchbase integration specs against Couchbase Community 7.6 and
+  8.0, plus Query TLS integration specs against Couchbase Enterprise 7.6 and
+  8.0 and Couchbase Community behind nginx TLS.
+- The pre-commit hook now strips trailing whitespace from generated HTML docs
+  after `crystal docs`.
+- KV and Query clients now reuse the shared connectivity layer for socket and
+  TLS setup.
+- Query service and topology HTTP clients now use
+  `CouchBase::Connectivity::HTTPClient` for HTTP construction.
+- `Query::Cluster.from_string` now discovers Query nodes from Couchbase
+  topology by default and keeps static Query seeds as fallback.
+- Query clients now clear and reprepare cached plans once when Couchbase reports
+  a missing prepared statement.
+- Query clients now reuse HTTP connections instead of closing every request.
+- Query examples now use `client` variable names and run against seeded random
+  user documents.
+- Query examples now demonstrate bucket/scope query context, `query_as`,
+  `query_each_as`, `query_cursor`, and typed `Result` row iteration.
+- Runnable examples now live under `examples/<example_name>/example.cr`, with
+  shared constants, methods, structs, and ULID helpers under `examples/shared`.
+- Runnable examples now use short private aliases for shared structs and
+  client classes to keep example bodies concise.
+- Query docs, examples, and specs now avoid reserved `value` and `key` aliases
+  in runnable N1QL statements.
+- `shard.yml` and `CouchBase::VERSION` were bumped to `0.0.4`.
+- CHANGELOG now records the `v0.0.2` release contents from the git tag range.
+
+## [0.0.2] - 2026-05-22
+
+### Added
+- TLS socket support for `KV::Client` and `KV::Pool`, including configurable
+  certificate verification, hostname override, and custom OpenSSL client
+  context support.
+- `CouchBase::Services::KV::Cluster`, a seed-failover KV client backed
+  by one active `KV::Pool`.
+- `Endpoint.from_string`, plus `KV::Client.from_string`, `KV::Pool.from_string`,
+  and `KV::Cluster.from_string` helpers for building KV connections from
+  Couchbase connection strings, including
+  `user:pass@host/bucket?tls_verify=...` parsing.
+- Couchbase integration helper support for TLS KV endpoints and alternate
+  host ports through `COUCHBASE_TLS`, `COUCHBASE_TLS_VERIFY`,
+  `COUCHBASE_KV_PORT`, and `COUCHBASE_MANAGEMENT_PORT`.
+- `examples/constants.cr`, a shared environment parser and connection string
+  helper used by the runnable examples.
+- `examples/kv_cluster.cr` for exercising seed-failover KV operations.
+- Generated API documentation for `KV::Cluster`, `KV::Constants`, and
+  `KV::RequestBuffer`.
+- `CODE_OF_CONDUCT.md`.
+
+### Changed
+- KV request serialization now lives in `KV::RequestBuffer.make`, with
+  `RequestWriter` responsible only for writing and flushing the generated
+  buffer.
+- KV protocol constants now live under `KV::Constants` instead of directly
+  under `KV`.
+- README now documents TLS KV usage, connection string helpers, seed failover,
+  generated docs, and example environment variables.
+- Runnable examples now reuse `examples/constants.cr` instead of repeating
+  Couchbase environment parsing and connection string assembly.
+- `shard.yml` and `CouchBase::VERSION` were bumped to `0.0.2`.
+
+### Removed
+- Removed the local `.gitconfig` file from the repository.
+
+## [0.0.1] - 2026-05-05
+
+### Added
+- Initial library scaffold (`shard.yml`, source layout, spec suite).
+- `CouchBase::ConnectionString` parser supporting `couchbase://`,
+  `couchbases://`, `http(s)://` schemes, comma-separated seed hosts, and
+  explicit ports.
+- `CouchBase::Service` enum covering Data (KV), Query, Search,
+  Analytics, Index, Eventing, Views, and Management — with plaintext and TLS
+  default ports.
+- `CouchBase::Endpoint` value type describing a single `host:port`
+  per service.
+- Dummy `CouchBase::Client` that enumerates every `(host × service)`
+  endpoint and TCP-probes reachability across all interfaces. No Couchbase
+  protocol handshake is performed yet.
+- Binary-protocol KV client support for authenticated `get`, `set`, and
+  `delete` operations against Couchbase Server.
+- KV expiration updates through `touch`, plus atomic get-and-touch via
+  `get(key, expiry:)`, on both `KV::Client` and `KV::Pool`.
+- KV counter operations through `increment` and `decrement` on both
+  `KV::Client` and `KV::Pool`.
+- Couchbase vbucket hashing for document operations so KV writes are visible
+  through Couchbase management and dashboard document lookup.
+- `CouchBase::Services::KV::Pool`, a fixed-size pool of authenticated
+  KV clients with a default size of 10 connections.
+- Typed `set`/`get_as(key, Type)` helpers for `JSON::Serializable` KV values on
+  both `KV::Client` and `KV::Pool`.
+- Real Couchbase integration specs and a GitHub Actions job that boots
+  `couchbase:community-7.6.0`, initializes a bucket, and verifies KV behavior
+  against a live server.
+- Generated API documentation under `docs/`, plus a pre-commit hook step that
+  refreshes it with deterministic project metadata.
+
+### Changed
+- `KV::Request` and `KV::Response` are now Crystal `record` value types.
+- `KV::Response#success?` is defined by reopening the generated response
+  struct after the `record` declaration.
+- `KV::Pool` now generates its pooled client forwarding methods through an
+  internal `ClientDelegator` macro while preserving the same public API.
+
+[Unreleased]: https://github.com/shardscry/couchbase/compare/v0.0.5...HEAD
+[0.0.5]: https://github.com/shardscry/couchbase/releases/tag/v0.0.5
+[0.0.4]: https://github.com/shardscry/crybase/compare/v0.0.2...v0.0.4
+[0.0.2]: https://github.com/shardscry/crybase/releases/tag/v0.0.2
+[0.0.1]: https://github.com/shardscry/crybase/releases/tag/v0.0.1

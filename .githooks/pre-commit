@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+# Pre-commit hook: blocks the commit if formatting, lint, build, docs, or specs fail.
+#
+# Activate once per clone:
+#   git config core.hooksPath .githooks
+#
+# Bypass for an emergency commit:
+#   git commit --no-verify
+
+set -euo pipefail
+export CRYSTAL_CACHE_DIR="${CRYSTAL_CACHE_DIR:-.crystal-cache}"
+mkdir -p "$CRYSTAL_CACHE_DIR"
+
+echo "[pre-commit] crystal tool format --check"
+crystal tool format --check
+
+staged_crystal_files=()
+while IFS= read -r path; do
+  staged_crystal_files+=("$path")
+done < <(git diff --cached --name-only --diff-filter=ACMR | rg '\.cr$' || true)
+
+if ((${#staged_crystal_files[@]})); then
+  if [[ ! -x bin/ameba ]]; then
+    echo "[pre-commit] missing bin/ameba; run shards install and shards build ameba"
+    exit 1
+  fi
+
+  echo "[pre-commit] bin/ameba ${staged_crystal_files[*]}"
+  bin/ameba "${staged_crystal_files[@]}"
+else
+  echo "[pre-commit] skipping ameba (no staged Crystal files)"
+fi
+
+echo "[pre-commit] crystal build --no-codegen src/couchbase.cr"
+crystal build --no-codegen src/couchbase.cr
+
+echo "[pre-commit] crystal docs src/couchbase.cr -o docs --project-version=main-dev --source-refname=main"
+crystal docs src/couchbase.cr -o docs --project-version=main-dev --source-refname=main
+
+echo "[pre-commit] strip trailing whitespace from generated docs"
+find docs -type f \( -name '*.html' -o -name '*.css' -o -name '*.js' -o -name '*.json' \) -print0 | xargs -0 perl -pi -e 's/[ \t]+$//'
+
+if ! git diff --quiet -- docs; then
+  echo "[pre-commit] docs/ changed after deterministic docs generation"
+  echo "[pre-commit] review and stage generated docs before committing"
+  exit 1
+fi
+
+echo "[pre-commit] crystal spec"
+crystal spec --order=random --error-trace

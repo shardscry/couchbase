@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Crystal Docs 1.18.2">
+<meta name="crystal_docs.project_version" content="main-dev">
+<meta name="crystal_docs.project_name" content="couchbase">
+
+
+
+<link href="css/style.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="js/doc.js"></script>
+
+  <meta name="repository-name" content="couchbase">
+  <title>CouchBase - couchbase main-dev</title>
+  <script type="text/javascript">
+    CrystalDocs.base_path = "";
+  </script>
+</head>
+<body>
+
+<svg class="hidden">
+  <symbol id="octicon-link" viewBox="0 0 16 16">
+    <path fill="currentColor" fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path>
+  </symbol>
+</svg>
+<input type="checkbox" id="sidebar-btn">
+<label for="sidebar-btn" id="sidebar-btn-label">
+  <svg class="open" xmlns="http://www.w3.org/2000/svg" height="2em" width="2em" viewBox="0 0 512 512"><title>Open Sidebar</title><path fill="currentColor" d="M80 96v64h352V96H80zm0 112v64h352v-64H80zm0 112v64h352v-64H80z"></path></svg>
+  <svg class="close" xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" viewBox="0 0 512 512"><title>Close Sidebar</title><path fill="currentColor" d="m118.6 73.4-45.2 45.2L210.7 256 73.4 393.4l45.2 45.2L256 301.3l137.4 137.3 45.2-45.2L301.3 256l137.3-137.4-45.2-45.2L256 210.7Z"></path></svg>
+</label>
+<div class="sidebar">
+  <div class="sidebar-header">
+    <div class="search-box">
+      <input type="search" class="search-input" placeholder="Search..." spellcheck="false" aria-label="Search">
+    </div>
+
+    <div class="project-summary">
+      <h1 class="project-name">
+        <a href="index.html">
+          couchbase
+        </a>
+      </h1>
+
+      <span class="project-version">
+        main-dev
+      </span>
+    </div>
+  </div>
+
+  <div class="search-results hidden">
+    <ul class="search-list"></ul>
+  </div>
+
+  <div class="types-list">
+    <ul>
+
+  <li class="parent open current" data-id="couchbase/CouchBase" data-name="couchbase">
+      <a href="CouchBase.html">CouchBase</a>
+
+        <ul>
+
+  <li class=" " data-id="couchbase/CouchBase/Client" data-name="couchbase::client">
+      <a href="CouchBase/Client.html">Client</a>
+
+    </li>
+
+  <li class=" " data-id="couchbase/CouchBase/ConnectionString" data-name="couchbase::connectionstring">
+      <a href="CouchBase/ConnectionString.html">ConnectionString</a>
+
+    </li>
+
+  <li class="parent " data-id="couchbase/CouchBase/Connectivity" data-name="couchbase::connectivity">
+      <a href="CouchBase/Connectivity.html">Connectivity</a>
+
+        <ul>
+
+  <li class=" " data-id="couchbase/CouchBase/Connectivity/HostPort" data-name="couchbase::connectivity::hostport">
+      <a href="CouchBase/Connectivity/HostPort.html">HostPort</a>
+
+    </li>
+
+  <li class="parent " data-id="couchbase/CouchBase/Connectivity/HTTPClient" data-name="couchbase::connectivity::httpclient">
+      <a href="CouchBase/Connectivity/HTTPClient.html">HTTPClient</a>
+
+        <ul>
+
+  <li class=" " data-id="couchbase/CouchBase/Connectivity/HTTPClient/Client" data-name="couchbase::connectivity::httpclient::client">
+      <a href="CouchBase/Connectivity/HTTPClient/Client.html">Client</a>
+
+    </li>
+
+</ul>
+
+
+    </li>
+
+  <li class=" " data-id="couchbase/CouchBase/Connectivity/SocketConfig" data-name="couchbase::connectivity::socketconfig">
+      <a href="CouchBase/Connectivity/SocketConfig.html">SocketConfig</a>
+
+    </li>
+
+  <li class=" " data-id="couchbase/CouchBase/Connectivity/TCPSocket" data-name="couchbase::connectivity::tcpsocket">
+      <a href="CouchBase/Connectivity/TCPSocket.html">TCPSocket</a>
+
+    </li>
+
+  <li class=" " data-id="couchbase/CouchBase/Connectivity/TLSSocket" data-name="couchbase::connectivity::tlssocket">
+      <a href="CouchBase/Connectivity/TLSSocket.html">TLSSocket</a>
+
+    </li>
+
+</ul>
+
+
+    </li>
+
+  <li class=" " data-id="couchbase/CouchBase/Endpoint" data-name="couchbase::endpoint">
+      <a href="CouchBase/Endpoint.html">Endpoint</a>
+
+    </li>
+
+  <li class="parent " data-id="couchbase/CouchBase/Interfaces" data-name="couchbase::interfaces">
+      <a href="CouchBase/Interfaces.html">Interfaces</a>
+
+        <ul>
+
+  <li class=" " data-id="couchbase/CouchBase/Interfaces/Client" data-name="couchbase::interfaces::client">
+      <a href="CouchBase/Interfaces/Client.html">Client</a>
+
+    </li>
+
+  <li class=" " data-id="couchbase/CouchBase/Interfaces/ConnectionString" data-name="couchbase::interfaces::connectionstring">
+      <a href="CouchBase/Interfaces/ConnectionString.html">ConnectionString</a>
+
+    </li>
+
+  <li class=" " data-id="couchbase/CouchBase/Interfaces/Endpoint" data-name="couchbase::interfaces::endpoint">
+      <a href="CouchBase/Interfaces/Endpoint.html">Endpoint</a>
+
+    </li>
+
+</ul>
+
+
+    </li>
+
+  <li class=" " data-id="couchbase/CouchBase/KV" data-name="couchbase::kv">
+      <a href="CouchBase/KV.html">KV</a>
+
+    </li>
+
+  <li class="parent " data-id="couchbase/CouchBase/Policies" data-name="couchbase::policies">
+      <a href="CouchBase/Policies.html">Policies</a>
+
+        <ul>
+
+  <li class=" " data-id="couchbase/CouchBase/Policies/RetryPolicy" data-name="couchbase::policies::retrypolicy">
+      <a href="CouchBase/Policies/RetryPolicy.html">RetryPolicy</a>
+
+    </li>
+
+</ul>
+
+
+    </li>
+
+  <li class=" " data-id="couchbase/CouchBase/Query" data-name="couchbase::query">
+      <a href="CouchBase/Query.html">Query</a>
+
+    </li>
+
+  <li class=" " data-id="couchbase/CouchBase/RetryPolicy" data-name="couchbase::retrypolicy">
+      <a href="CouchBase/RetryPolicy.html">RetryPolicy</a>
+
+    </li>
+
+  <li class=" " data-id="couchbase/CouchBase/Service" data-name="couchbase::service">
+      <a href="CouchBase/Service.html">Service</a>
+
+    </li>
+
+  <li class="parent " data-id="couchbase/CouchBase/Services" data-name="couchbase::services">
+      <a href="CouchBase/Services.html">Services</a>
+
+        <ul>
+
+  <li class="parent " data-id="couchbase/CouchBase/Services/KV" data-name="couchbase::services::kv">
+      <a href="CouchBase/Services/KV.html">KV</a>
+
+        <ul>
+
+  <li class=" " data-id="couchbase/CouchBase/Services/KV/AuthFailed" data-name="couchbase::services::kv::authfailed">
+      <a href="CouchBase/Services/KV/AuthFailed.html">AuthFailed</a>
+
+    </li>
+
+  <li class=" " data-id="couchbase/CouchBase/Services/KV/Bucket" data-name="couchbase::services::kv::bucket">
+      <a href="CouchBase/Services/KV/Bucket.html">Bucket</a>
+
+    </li>
+
+  <li class=" " data-id="couchbase/CouchBase/Services/KV/BucketConfig" data-name="couchbase::services::kv::bucketconfig">
+      <a href="CouchBase/Services/KV/BucketConfig.html">BucketConfig</a>
+
+    </li>
+
+  <li class=" " data-id="couchbase/CouchBase/Services/KV/BucketConfigClient" data-name="couchbase::services::kv::bucketconfigclient">
+      <a href="CouchBase/Services/KV/BucketConfigClient.html">BucketConfigClient</a>
+
+    </li>
+
+  <li class=" " data-id="couchbase/CouchBase/Services/KV/Client" data-name="couchbase::services::kv::client">
+      <a href="CouchBase/Services/KV/Client.html">Client</a>
+
+    </li>
+
+  <li class=" " data-id="couchbase/CouchBase/Services/KV/Cluster" data-name="couchbase::services::kv::cluster">
+      <a href="CouchBase/Services/KV/Cluster.html">Cluster</a>
+
+    </li>
+
+  <li class=" " data-id="couchbase/CouchBase/Services/KV/CollectionContext" data-name="couchbase::services::kv::collectioncontext(target)">
+      <a href="CouchBase/Services/KV/CollectionContext.html">CollectionContext</a>
+
+    </li>
+
+  <li class=" " data-id="couchbase/CouchBase/Services/KV/Constants" data-name="couchbase::services::kv::constants">
+      <a href="CouchBase/Services/KV/Constants.html">Constants</a>
+
+    </li>
+
+  <li class=" " data-id="couchbase/CouchBase/Services/KV/Error" data-name="couchbase::services::kv::error">
+      <a href="CouchBase/Services/KV/Error.html">Error</a>
+
+    </li>
+
+  <li class=" " data-id="couchbase/CouchBase/Services/KV/NotFound" data-name="couchbase::services::kv::notfound">
+      <a href="CouchBase/Services/KV/NotFound.html">NotFound</a>
+
+    </li>
+
+  <li class=" " data-id="couchbase/CouchBase/Services/KV/Opcode" data-name="couchbase::services::kv::opcode">
+      <a href="CouchBase/Services/KV/Opcode.html">Opcode</a>
+
+    </li>
+
+  <li class=" " data-id="couchbase/CouchBase/Services/KV/Pool" data-name="couchbase::services::kv::pool">
+      <a href="CouchBase/Services/KV/Pool.html">Pool</a>
+
+    </li>
+
+  <li class=" " data-id="couchbase/CouchBase/Services/KV/Request" data-name="couchbase::services::kv::request">
+      <a href="CouchBase/Services/KV/Request.html">Request</a>
+
+    </li>
+
+  <li class=" " data-id="couchbase/CouchBase/Services/KV/RequestBuffer" data-name="couchbase::services::kv::requestbuffer">
+      <a href="CouchBase/Services/KV/RequestBuffer.html">RequestBuffer</a>
+
+    </li>
+
+  <li class=" " data-id="couchbase/CouchBase/Services/KV/RequestWriter" data-name="couchbase::services::kv::requestwriter">
+      <a href="CouchBase/Services/KV/RequestWriter.html">RequestWriter</a>
+
+    </li>
+
+  <li class=" " data-id="couchbase/CouchBase/Services/KV/Response" data-name="couchbase::services::kv::response">
+      <a href="CouchBase/Services/KV/Response.html">Response</a>
+
+    </li>
+
+  <li class=" " data-id="couchbase/CouchBase/Services/KV/ResponseReader" data-name="couchbase::services::kv::responsereader">
+      <a href="CouchBase/Services/KV/ResponseReader.html">ResponseReader</a>
+
+    </li>
+
+  <li class=" " data-id="couchbase/CouchBase/Services/KV/ScopeContext" data-name="couchbase::services::kv::scopecontext(target)">
+      <a href="CouchBase/Services/KV/ScopeContext.html">ScopeContext</a>
+
+    </li>
+
+  <li class=" " data-id="couchbase/CouchBase/Services/KV/Serializable" data-name="couchbase::services::kv::serializable">
+      <a href="CouchBase/Services/KV/Serializable.html">Serializable</a>
+
+    </li>
+
+  <li class=" " data-id="couchbase/CouchBase/Services/KV/Status" data-name="couchbase::services::kv::status">
+      <a href="CouchBase/Services/KV/Status.html">Status</a>
+
+    </li>
+
+</ul>
+
+
+    </li>
+
+  <li class="parent " data-id="couchbase/CouchBase/Services/Query" data-name="couchbase::services::query">
+      <a href="CouchBase/Services/Query.html">Query</a>
+
+        <ul>
+
+  <li class=" " data-id="couchbase/CouchBase/Services/Query/BucketContext" data-name="couchbase::services::query::bucketcontext(target)">
+      <a href="CouchBase/Services/Query/BucketContext.html">BucketContext</a>
+
+    </li>
+
+  <li class=" " data-id="couchbase/CouchBase/Services/Query/Client" data-name="couchbase::services::query::client">
+      <a href="CouchBase/Services/Query/Client.html">Client</a>
+
+    </li>
+
+  <li class=" " data-id="couchbase/CouchBase/Services/Query/Cluster" data-name="couchbase::services::query::cluster">
+      <a href="CouchBase/Services/Query/Cluster.html">Cluster</a>
+
+    </li>
+
+  <li class=" " data-id="couchbase/CouchBase/Services/Query/Cursor" data-name="couchbase::services::query::cursor">
+      <a href="CouchBase/Services/Query/Cursor.html">Cursor</a>
+
+    </li>
+
+  <li class=" " data-id="couchbase/CouchBase/Services/Query/Error" data-name="couchbase::services::query::error">
+      <a href="CouchBase/Services/Query/Error.html">Error</a>
+
+    </li>
+
+  <li class=" " data-id="couchbase/CouchBase/Services/Query/Issue" data-name="couchbase::services::query::issue">
+      <a href="CouchBase/Services/Query/Issue.html">Issue</a>
+
+    </li>
+
+  <li class=" " data-id="couchbase/CouchBase/Services/Query/Parameter" data-name="couchbase::services::query::parameter">
+      <a href="CouchBase/Services/Query/Parameter.html">Parameter</a>
+
+    </li>
+
+  <li class=" " data-id="couchbase/CouchBase/Services/Query/PreparedStatement" data-name="couchbase::services::query::preparedstatement">
+      <a href="CouchBase/Services/Query/PreparedStatement.html">PreparedStatement</a>
+
+    </li>
+
+  <li class=" " data-id="couchbase/CouchBase/Services/Query/QueryContext" data-name="couchbase::services::query::querycontext">
+      <a href="CouchBase/Services/Query/QueryContext.html">QueryContext</a>
+
+    </li>
+
+  <li class=" " data-id="couchbase/CouchBase/Services/Query/Result" data-name="couchbase::services::query::result">
+      <a href="CouchBase/Services/Query/Result.html">Result</a>
+
+    </li>
+
+  <li class=" " data-id="couchbase/CouchBase/Services/Query/ScanConsistency" data-name="couchbase::services::query::scanconsistency">
+      <a href="CouchBase/Services/Query/ScanConsistency.html">ScanConsistency</a>
+
+    </li>
+
+  <li class=" " data-id="couchbase/CouchBase/Services/Query/ScopeContext" data-name="couchbase::services::query::scopecontext(target)">
+      <a href="CouchBase/Services/Query/ScopeContext.html">ScopeContext</a>
+
+    </li>
+
+  <li class=" " data-id="couchbase/CouchBase/Services/Query/Topology" data-name="couchbase::services::query::topology">
+      <a href="CouchBase/Services/Query/Topology.html">Topology</a>
+
+    </li>
+
+  <li class=" " data-id="couchbase/CouchBase/Services/Query/TopologyClient" data-name="couchbase::services::query::topologyclient">
+      <a href="CouchBase/Services/Query/TopologyClient.html">TopologyClient</a>
+
+    </li>
+
+</ul>
+
+
+    </li>
+
+</ul>
+
+
+    </li>
+
+</ul>
+
+
+    </li>
+
+</ul>
+
+  </div>
+</div>
+
+
+<div class="main-content">
+<h1 class="type-name">
+
+  <span class="kind">
+    module
+  </span> CouchBase
+
+</h1>
+
+
+
+
+
+  <h2>
+    <a id="overview" class="anchor" href="#overview">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Overview
+  </h2>
+
+  <p>Standalone Crystal client for Couchbase KV and Query services.</p>
+<pre><code class="language-crystal"><span class="k">require</span> <span class="s">&quot;couchbase&quot;</span>
+
+client <span class="o">=</span> <span class="t">CouchBase</span><span class="t">::</span><span class="t">KV</span><span class="t">::</span><span class="t">Client</span>.from_string(
+  <span class="s">&quot;couchbase://Administrator:password@localhost/default&quot;</span>,
+)
+client.set(<span class="s">&quot;hello&quot;</span>, <span class="s">%({&quot;hello&quot;:&quot;world&quot;})</span>)
+client.close</code></pre>
+<p><code><a href="CouchBase/Client.html">Client</a></code> probes service endpoints. Protocol clients live under <code><a href="CouchBase/KV.html">KV</a></code> and <code><a href="CouchBase/Query.html">Query</a></code>.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <h2>
+    <a id="defined-in" class="anchor" href="#defined-in">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Defined in:
+  </h2>
+
+
+      <a href="https://github.com/shardscry/couchbase/blob/main/src/couchbase.cr#L17" target="_blank">
+        couchbase.cr:17
+      </a>
+
+    <br/>
+
+
+      <a href="https://github.com/shardscry/couchbase/blob/main/src/couchbase.cr#L30" target="_blank">
+        couchbase.cr:30
+      </a>
+
+    <br/>
+
+
+      <a href="https://github.com/shardscry/couchbase/blob/main/src/couchbase/client.cr#L1" target="_blank">
+        couchbase/client.cr
+      </a>
+
+    <br/>
+
+
+      <a href="https://github.com/shardscry/couchbase/blob/main/src/couchbase/connection_string.cr#L3" target="_blank">
+        couchbase/connection_string.cr
+      </a>
+
+    <br/>
+
+
+      <a href="https://github.com/shardscry/couchbase/blob/main/src/couchbase/endpoint.cr#L1" target="_blank">
+        couchbase/endpoint.cr
+      </a>
+
+    <br/>
+
+
+      <a href="https://github.com/shardscry/couchbase/blob/main/src/couchbase/service.cr#L1" target="_blank">
+        couchbase/service.cr
+      </a>
+
+    <br/>
+
+
+      <a href="https://github.com/shardscry/couchbase/blob/main/src/couchbase/version.cr#L1" target="_blank">
+        couchbase/version.cr
+      </a>
+
+    <br/>
+
+
+
+
+
+    <h2>
+      <a id="constant-summary" class="anchor" href="#constant-summary">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+      Constant Summary
+    </h2>
+
+  <dl>
+
+      <dt class="entry-const" id="VERSION">
+        <strong>VERSION</strong> = <code><span class="s">&quot;0.0.5&quot;</span></code>
+      </dt>
+
+      <dd class="entry-const-doc">
+        <p>Shard version, kept in sync with <code>shard.yml</code>.</p>
+<pre><code class="language-crystal"><span class="t">CouchBase</span><span class="t">::</span><span class="t">VERSION</span> <span class="c"># =&gt; &quot;0.0.5&quot;</span></code></pre>
+      </dd>
+
+
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <div class="methods-inherited">
+
+  </div>
+
+
+
+
+
+
+
+
+
+
+</div>
+
+</body>
+</html>

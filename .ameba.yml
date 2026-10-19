@@ -1,0 +1,21 @@
+Globs:
+  - "**/*.cr"
+  - "!lib"
+Excluded:
+  - spec/helpers/**/*.cr
+
+# Preserve imported formatting while adopting the Crystal 1.21 compatible linter.
+Style/MultilineStringLiteral:
+  Enabled: false
+Style/VerboseNilType:
+  Enabled: false
+Style/RedundantNilInControlExpression:
+  Enabled: false
+Style/RedundantBegin:
+  Enabled: false
+
+# Cleanup defaults are read by ensure when setup fails.
+Lint/UselessAssign:
+  Excluded:
+    - examples/query_*/example.cr
+    - spec/integration/couchbase_query*_spec.cr
