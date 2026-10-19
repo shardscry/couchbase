@@ -71,13 +71,13 @@ admins.set("some-uuid-here", %({"name":"Grace"}))
 ```crystal
 require "couchbase"
 
-query = CouchBase::Query::Client.from_string(
+client = CouchBase::Query::Client.from_string(
   "couchbase://Administrator:password@127.0.0.1/commerce",
 )
 
-query.scope = "ecommerce_shop"
+client.scope = "ecommerce_shop"
 
-rows = query.query(
+rows = client.query(
   "SELECT META(u).id AS doc_key, u.name FROM users AS u LIMIT 5",
 )
 ```

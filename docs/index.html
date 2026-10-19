@@ -473,13 +473,13 @@ admins <span class="o">=</span> kv.collection(<span class="s">&quot;admins&quot;
 admins.set(<span class="s">&quot;some-uuid-here&quot;</span>, <span class="s">%({&quot;name&quot;:&quot;Grace&quot;})</span>)</code></pre>
 <pre><code class="language-crystal"><span class="k">require</span> <span class="s">&quot;couchbase&quot;</span>
 
-query <span class="o">=</span> <span class="t">CouchBase</span><span class="t">::</span><span class="t">Query</span><span class="t">::</span><span class="t">Client</span>.from_string(
+client <span class="o">=</span> <span class="t">CouchBase</span><span class="t">::</span><span class="t">Query</span><span class="t">::</span><span class="t">Client</span>.from_string(
   <span class="s">&quot;couchbase://Administrator:password@127.0.0.1/commerce&quot;</span>,
 )
 
-query.scope <span class="o">=</span> <span class="s">&quot;ecommerce_shop&quot;</span>
+client.scope <span class="o">=</span> <span class="s">&quot;ecommerce_shop&quot;</span>
 
-rows <span class="o">=</span> query.query(
+rows <span class="o">=</span> client.query(
   <span class="s">&quot;SELECT META(u).id AS doc_key, u.name FROM users AS u LIMIT 5&quot;</span>,
 )</code></pre>
 </div>
