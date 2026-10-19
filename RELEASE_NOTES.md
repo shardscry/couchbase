@@ -61,7 +61,7 @@ all driver features through CryBase 0.0.5. Applications now use
   generated API documentation. Formatting, Ameba, coverage tooling, and local
   commit hooks are retained.
 - Ameba 1.7 supports dependency installation with Crystal 1.21.
-- Coverage CI uses Ubuntu 24.04 with a dedicated kcov package cache for
+- Coverage CI uses Ubuntu 24.04 with a cached kcov 43 source build for
   compatibility with the current Crystal toolchain.
 
 ## Migration

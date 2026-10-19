@@ -60,12 +60,12 @@ kv = CouchBase::KV::Client.from_string(
 )
 
 kv.scope = "ecommerce_shop"
-kv.collection = "users"
-kv.set("user:1", %({"name":"Ada"}))
-puts String.new(kv.get("user:1"))
+users = kv.collection("users")
+users.set("some-uuid-here", %({"name":"Ada"}))
+puts String.new(users.get("some-uuid-here"))
 
 admins = kv.collection("admins")
-admins.set("admin:1", %({"name":"Grace"}))
+admins.set("some-uuid-here", %({"name":"Grace"}))
 ```
 
 ```crystal

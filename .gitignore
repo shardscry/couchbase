@@ -13,6 +13,7 @@
 !examples/.env
 .envrc
 .crystal-cache
+/.cache/
 /coverage/
 /bin/ameba
 /bin/ameba.cr

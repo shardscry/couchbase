@@ -465,12 +465,12 @@ kv <span class="o">=</span> <span class="t">CouchBase</span><span class="t">::</
 )
 
 kv.scope <span class="o">=</span> <span class="s">&quot;ecommerce_shop&quot;</span>
-kv.collection <span class="o">=</span> <span class="s">&quot;users&quot;</span>
-kv.set(<span class="s">&quot;user:1&quot;</span>, <span class="s">%({&quot;name&quot;:&quot;Ada&quot;})</span>)
-puts <span class="t">String</span>.new(kv.get(<span class="s">&quot;user:1&quot;</span>))
+users <span class="o">=</span> kv.collection(<span class="s">&quot;users&quot;</span>)
+users.set(<span class="s">&quot;some-uuid-here&quot;</span>, <span class="s">%({&quot;name&quot;:&quot;Ada&quot;})</span>)
+puts <span class="t">String</span>.new(users.get(<span class="s">&quot;some-uuid-here&quot;</span>))
 
 admins <span class="o">=</span> kv.collection(<span class="s">&quot;admins&quot;</span>)
-admins.set(<span class="s">&quot;admin:1&quot;</span>, <span class="s">%({&quot;name&quot;:&quot;Grace&quot;})</span>)</code></pre>
+admins.set(<span class="s">&quot;some-uuid-here&quot;</span>, <span class="s">%({&quot;name&quot;:&quot;Grace&quot;})</span>)</code></pre>
 <pre><code class="language-crystal"><span class="k">require</span> <span class="s">&quot;couchbase&quot;</span>
 
 query <span class="o">=</span> <span class="t">CouchBase</span><span class="t">::</span><span class="t">Query</span><span class="t">::</span><span class="t">Client</span>.from_string(
