@@ -19,6 +19,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   feature set, migration steps, and current limitations.
 - Added tag-driven GitHub release publishing with manifest/version checks.
 - Updated the Ameba development dependency to 1.7 for Crystal 1.21 compatibility.
+- Moved coverage CI to Ubuntu 24.04 and isolated its kcov package cache to
+  resolve linker errors from the current Crystal distribution on Ubuntu 22.04.
 
 ### Added
 - `KV::BucketConfig`, `KV::BucketConfigClient`, and Management bucket config
