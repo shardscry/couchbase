@@ -2,30 +2,31 @@ require "../shared/methods"
 
 private alias Examples = CouchBaseExamples
 
-kv = Examples.open_kv_client
+client = Examples.open_kv_client
+documents = client.collection(Examples::COLLECTION)
 
 key = "couchbase:expiration"
 
-kv.set(key, "short lived", expiry: 2_u32)
+documents.set(key, "short lived", expiry: 2_u32)
 puts "SET    #{key} with expiry=2s"
 
 sleep 1.second
-kv.touch(key, 10_u32)
+documents.touch(key, 10_u32)
 puts "TOUCH  #{key} with expiry=10s"
 
 sleep 2.seconds
-puts "GET    #{key} => #{String.new(kv.get(key))}"
+puts "GET    #{key} => #{String.new(documents.get(key))}"
 
-kv.set(key, "get and touch", expiry: 2_u32)
+documents.set(key, "get and touch", expiry: 2_u32)
 puts "SET    #{key} with expiry=2s"
 
 sleep 1.second
-puts "GAT    #{key} => #{String.new(kv.get(key, expiry: 10_u32))}"
+puts "GAT    #{key} => #{String.new(documents.get(key, expiry: 10_u32))}"
 
 sleep 2.seconds
-puts "GET    #{key} => #{String.new(kv.get(key))}"
+puts "GET    #{key} => #{String.new(documents.get(key))}"
 
-kv.delete(key)
+documents.delete(key)
 puts "DELETE #{key}"
 
-kv.close
+client.close

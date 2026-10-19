@@ -3,25 +3,25 @@ require "../shared/methods"
 private alias Examples = CouchBaseExamples
 private alias Profile = CouchBaseExamples::Structs::Profile
 
-kv = Examples.open_kv_client
+client = Examples.open_kv_client
+documents = client.collection(Examples::COLLECTION)
 
-cas = kv.set("couchbase:hello", "world")
+cas = documents.set("couchbase:hello", "world")
 puts "SET    couchbase:hello => CAS=#{cas}"
 
-value = kv.get("couchbase:hello")
+value = documents.get("couchbase:hello")
 puts "GET    couchbase:hello => #{String.new(value)}"
 
-kv.set("couchbase:profile", Profile.new("ada", 42))
-profile = kv.get_as("couchbase:profile", Profile)
+documents.set("couchbase:profile", Profile.new("ada", 42))
+profile = documents.get_as("couchbase:profile", Profile)
 puts "GET    couchbase:profile => #{profile.name} scored #{profile.score}"
 
-context = kv.collection(Examples::COLLECTION)
-context.set("couchbase:context", "current scope collection")
-puts "GET    couchbase:context => #{String.new(context.get("couchbase:context"))}"
+documents.set("couchbase:context", "current scope collection")
+puts "GET    couchbase:context => #{String.new(documents.get("couchbase:context"))}"
 
-# kv.delete("couchbase:hello")
-# kv.delete("couchbase:profile")
-# kv.delete("couchbase:context")
+# documents.delete("couchbase:hello")
+# documents.delete("couchbase:profile")
+# documents.delete("couchbase:context")
 # puts "DELETE couchbase:hello"
 
-kv.close
+client.close

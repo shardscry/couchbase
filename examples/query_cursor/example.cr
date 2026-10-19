@@ -4,12 +4,12 @@ private alias Examples = CouchBaseExamples
 private alias User = CouchBaseExamples::Structs::User
 private alias UserRow = CouchBaseExamples::Structs::UserRow
 
-kv = Examples.open_kv_client
-cluster = Examples.open_query_cluster
+kv_client = Examples.open_kv_client
+client = Examples.open_query_cluster
 users = [] of User
 
 begin
-  users = Examples.seed_query_users(kv)
+  users = Examples.seed_query_users(kv_client)
   keys = Examples.query_user_keys(users)
   statement = <<-N1QL
     SELECT META(u).id AS doc_key, u.id, u.type, u.name, u.email, u.active
@@ -19,7 +19,7 @@ begin
     ORDER BY u.name
     N1QL
 
-  cursor = cluster.query_cursor(
+  cursor = client.query_cursor(
     statement,
     named_args: {keys: keys, type: "User"},
     query_context: Examples.query_context,
@@ -33,7 +33,7 @@ begin
 
   puts "status=#{result.status} rows_retained=#{result.rows.size}"
 ensure
-  Examples.delete_query_users(kv, users)
-  kv.close rescue nil
-  cluster.close rescue nil
+  Examples.delete_query_users(kv_client, users)
+  kv_client.close rescue nil
+  client.close rescue nil
 end

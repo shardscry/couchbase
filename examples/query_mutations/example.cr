@@ -3,17 +3,17 @@ require "../shared/methods"
 private alias Examples = CouchBaseExamples
 private alias User = CouchBaseExamples::Structs::User
 
-kv = Examples.open_kv_client
+kv_client = Examples.open_kv_client
 client = Examples.open_query_client
-cluster = Examples.open_query_cluster
+cluster_client = Examples.open_query_cluster
 users = [] of User
 insert_id = "User:#{ULID.generate}"
 upsert_id = "User:#{ULID.generate}"
 mutation_ids = [insert_id, upsert_id]
 
 begin
-  mutation_ids.each { |id| kv.delete(id) rescue nil }
-  users = Examples.seed_query_users(kv)
+  mutation_ids.each { |id| kv_client.delete(id) rescue nil }
+  users = Examples.seed_query_users(kv_client)
   update_id = users.first.id
   array_update_id = users[1].id
   inserted_doc = {
@@ -111,7 +111,7 @@ begin
   puts "SET ... FOR ... END"
   loop_updated.rows.each { |row| puts row.to_json }
 
-  upserted = cluster.query(
+  upserted = cluster_client.query(
     upsert_statement,
     named_args: {id: upsert_id, doc: upserted_doc},
     query_context: Examples.query_context,
@@ -119,7 +119,7 @@ begin
   puts "UPSERT"
   upserted.rows.each { |row| puts row.to_json }
 
-  deleted = cluster.query(
+  deleted = cluster_client.query(
     delete_statement,
     named_args: {ids: mutation_ids},
     query_context: Examples.query_context,
@@ -127,9 +127,9 @@ begin
   puts "DELETE"
   deleted.rows.each { |row| puts row.to_json }
 ensure
-  mutation_ids.each { |id| kv.delete(id) rescue nil }
-  Examples.delete_query_users(kv, users)
-  kv.close rescue nil
+  mutation_ids.each { |id| kv_client.delete(id) rescue nil }
+  Examples.delete_query_users(kv_client, users)
+  kv_client.close rescue nil
   client.close rescue nil
-  cluster.close rescue nil
+  cluster_client.close rescue nil
 end

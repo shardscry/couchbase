@@ -6,9 +6,9 @@ private alias RetryPolicy = CouchBase::RetryPolicy
 private alias User = CouchBaseExamples::Structs::User
 private alias UserRow = CouchBaseExamples::Structs::UserRow
 
-kv = Examples.open_kv_client
+kv_client = Examples.open_kv_client
 client = Examples.open_query_client
-cluster = Examples.open_query_cluster
+cluster_client = Examples.open_query_cluster
 users = [] of User
 policy = RetryPolicy.new(
   max_attempts: 3,
@@ -27,7 +27,7 @@ statement = <<-N1QL
   N1QL
 
 begin
-  users = Examples.seed_query_users(kv)
+  users = Examples.seed_query_users(kv_client)
   keys = Examples.query_user_keys(users)
 
   client_result = client.query(
@@ -46,7 +46,7 @@ begin
     puts "#{row.doc_key} #{row.name} <#{row.email}> active=#{row.active?}"
   end
 
-  cluster_result = cluster.query(
+  cluster_result = cluster_client.query(
     statement,
     named_args: {
       keys:   keys,
@@ -62,8 +62,8 @@ begin
     puts "#{row.doc_key} #{row.name} <#{row.email}> active=#{row.active?}"
   end
 ensure
-  Examples.delete_query_users(kv, users)
-  kv.close rescue nil
+  Examples.delete_query_users(kv_client, users)
+  kv_client.close rescue nil
   client.close rescue nil
-  cluster.close rescue nil
+  cluster_client.close rescue nil
 end

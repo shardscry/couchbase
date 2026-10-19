@@ -3,11 +3,11 @@ require "../structs"
 
 module CouchBaseExamples
   private def self.tls_query_string(tls : Bool) : String
-    query = [] of String
-    query << "tls_verify=#{TLS_VERIFY}" if tls
+    parameters = [] of String
+    parameters << "tls_verify=#{TLS_VERIFY}" if tls
     if tls_hostname = TLS_HOSTNAME
-      query << "tls_hostname=#{URI.encode_www_form(tls_hostname)}"
+      parameters << "tls_hostname=#{URI.encode_www_form(tls_hostname)}"
     end
-    query.empty? ? "" : "?#{query.join('&')}"
+    parameters.empty? ? "" : "?#{parameters.join('&')}"
   end
 end

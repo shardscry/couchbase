@@ -4,12 +4,12 @@ private alias Examples = CouchBaseExamples
 private alias User = CouchBaseExamples::Structs::User
 private alias UserRow = CouchBaseExamples::Structs::UserRow
 
-kv = Examples.open_kv_client
+kv_client = Examples.open_kv_client
 client = Examples.open_query_client
 users = [] of User
 
 begin
-  users = Examples.seed_query_users(kv)
+  users = Examples.seed_query_users(kv_client)
   keys = Examples.query_user_keys(users)
   statement = <<-N1QL
     SELECT META(u).id AS doc_key, u.id, u.type, u.name, u.email, u.active
@@ -55,7 +55,7 @@ begin
     puts "#{row.doc_key} #{row.name} <#{row.email}> active=#{row.active?}"
   end
 ensure
-  Examples.delete_query_users(kv, users)
-  kv.close rescue nil
+  Examples.delete_query_users(kv_client, users)
+  kv_client.close rescue nil
   client.close rescue nil
 end
