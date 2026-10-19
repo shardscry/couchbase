@@ -1,13 +1,10 @@
-require "../shared/methods"
+require "couchbase"
 
-private alias CouchbaseClient = CouchBase::Client
-private alias Examples = CouchBaseExamples
+uri = ENV["COUCHBASE_URL"]? || "couchbase://127.0.0.1"
+client = CouchBase::Client.new(uri, connect_timeout: 1.second)
 
-client = CouchbaseClient.new(Examples.cluster_connection_string)
-puts "Probing #{client.connection_string.hosts.join(", ")} (#{client.endpoints.size} endpoints total)..."
-
-reachable = client.connect
-puts "Reachable:"
-reachable.each { |endpoint| puts "  - #{endpoint}" }
-
-client.close
+begin
+  client.connect.each { |endpoint| puts endpoint }
+ensure
+  client.close
+end

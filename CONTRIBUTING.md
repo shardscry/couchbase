@@ -26,7 +26,8 @@ Unit specs use local protocol test servers. Real-server specs are enabled with
 Start the example environment, then run the integration suite:
 
 ```sh
-docker compose -f examples/docker-compose.yml up -d
+docker compose -f examples/kemal_api/docker-compose.yml up -d --wait couchbase
+docker compose -f examples/kemal_api/docker-compose.yml run --rm couchbase-init
 COUCHBASE_INTEGRATION=1 COUCHBASE_HOST=127.0.0.1 \
 COUCHBASE_USER=Administrator COUCHBASE_PASS=password \
 COUCHBASE_BUCKET=commerce crystal spec spec/integration
@@ -81,7 +82,7 @@ name.
 Run the formatter before committing:
 
 ```sh
-crystal tool format
+crystal tool format --exclude lib --exclude 'examples/*/lib'
 bin/ameba
 ```
 
@@ -99,7 +100,10 @@ crystal spec spec/couchbase/client_spec.cr # single file
 crystal spec -e "uses TLS ports"                   # by example name
 ```
 
-CI runs `crystal tool format --check` and `crystal spec` on every PR.
+CI checks formatting, runs driver specs, builds all standalone examples, and runs
+the Kemal HTTP specs. Community integration jobs also run the API specs and CLI
+examples against real Couchbase. Example dependencies are installed inside each
+example folder; Kemal is not a library dependency.
 
 ---
 

@@ -1,27 +1,21 @@
-require "../shared/methods"
+require "couchbase"
+require "uuid"
+require "./profile"
 
-private alias Examples = CouchBaseExamples
-private alias Profile = CouchBaseExamples::Structs::Profile
+uri = ENV["COUCHBASE_URL"]? || "couchbase://Administrator:password@127.0.0.1/commerce"
+client = CouchBase::KV::Client.from_string(uri)
+client.scope = ENV["COUCHBASE_SCOPE"]? || "_default"
+documents = client.collection(ENV["COUCHBASE_COLLECTION"]? || "_default")
+key = UUID.random.to_s
 
-client = Examples.open_kv_client
-documents = client.collection(Examples::COLLECTION)
+begin
+  cas = documents.set(key, "Hello, Couchbase")
+  puts "CAS=#{cas}: #{String.new(documents.get(key))}"
 
-cas = documents.set("couchbase:hello", "world")
-puts "SET    couchbase:hello => CAS=#{cas}"
-
-value = documents.get("couchbase:hello")
-puts "GET    couchbase:hello => #{String.new(value)}"
-
-documents.set("couchbase:profile", Profile.new("ada", 42))
-profile = documents.get_as("couchbase:profile", Profile)
-puts "GET    couchbase:profile => #{profile.name} scored #{profile.score}"
-
-documents.set("couchbase:context", "current scope collection")
-puts "GET    couchbase:context => #{String.new(documents.get("couchbase:context"))}"
-
-# documents.delete("couchbase:hello")
-# documents.delete("couchbase:profile")
-# documents.delete("couchbase:context")
-# puts "DELETE couchbase:hello"
-
-client.close
+  documents.set(key, Profile.new("Ada", 42))
+  profile = documents.get_as(key, Profile)
+  puts "#{profile.name} scored #{profile.score}"
+ensure
+  documents.delete(key) rescue nil
+  client.close
+end

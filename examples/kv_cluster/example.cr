@@ -1,23 +1,17 @@
-require "../shared/methods"
+require "couchbase"
+require "uuid"
 
-private alias Examples = CouchBaseExamples
-private alias KVCluster = CouchBase::KV::Cluster
+uri = ENV["COUCHBASE_URL"]? || "couchbase://Administrator:password@127.0.0.2,127.0.0.1/commerce"
+client = CouchBase::KV::Cluster.from_string(uri, size: 2, connect_timeout: 1.second)
+client.scope = ENV["COUCHBASE_SCOPE"]? || "_default"
+documents = client.collection(ENV["COUCHBASE_COLLECTION"]? || "_default")
+key = UUID.random.to_s
 
-client = KVCluster.from_string(Examples.kv_cluster_connection_string, size: 2)
-client.scope = Examples::SCOPE
-client.collection = Examples::COLLECTION
-documents = client.collection(Examples::COLLECTION)
-
-key = "couchbase:cluster"
-documents.set(key, "seed-failover")
-puts "SET #{key}"
-puts "GET #{key} => #{String.new(documents.get(key))}"
-
-documents.set("#{key}:context", "current scope collection")
-puts "GET #{key}:context => #{String.new(documents.get("#{key}:context"))}"
-
-documents.delete(key)
-documents.delete("#{key}:context")
-puts "DELETE #{key}"
-
-client.close
+begin
+  documents.set(key, "Connected through an available seed")
+  puts "Endpoint: #{client.active_endpoint}"
+  puts String.new(documents.get(key))
+ensure
+  documents.delete(key) rescue nil
+  client.close
+end

@@ -1,8 +1,10 @@
 Globs:
   - "**/*.cr"
   - "!lib"
+  - "!examples/*/lib/**/*.cr"
 Excluded:
   - spec/helpers/**/*.cr
+  - examples/*/lib/**/*.cr
 
 # Preserve imported formatting while adopting the Crystal 1.21 compatible linter.
 Style/MultilineStringLiteral:

@@ -81,3 +81,52 @@ rows = client.query(
   "SELECT META(u).id AS doc_key, u.name FROM users AS u LIMIT 5",
 )
 ```
+
+## Examples
+
+Each folder in [`examples/`](examples/) is a standalone Crystal application with
+its own `shard.yml`, locked dependencies, README, and local models. Copy any
+folder elsewhere and run `shards install` followed by `shards build`. Each
+example's README includes its run command.
+Examples use the published CouchBase shard and require no shared example files.
+
+| Example | Demonstrates |
+| --- | --- |
+| [kemal_api](examples/kemal_api/) | Kemal REST `/users`, UUID keys, SQL++ pagination, and HTTP/database specs. |
+| [kv_basics](examples/kv_basics/) | Raw values and typed JSON documents in collections. |
+| [kv_expiration](examples/kv_expiration/) | Expiration, touch, and atomic get-and-touch. |
+| [kv_cluster](examples/kv_cluster/) | KV connection pools and seed failover. |
+| [cluster_probe](examples/cluster_probe/) | TCP reachability of service endpoints. |
+| [kv_endpoint_from_cluster](examples/kv_endpoint_from_cluster/) | Connecting to a reachable KV endpoint. |
+| [query_basics](examples/query_basics/) | Parameters, typed rows, and row iteration. |
+| [query_cursor](examples/query_cursor/) | Query cluster seeds and streaming typed rows without buffering the result. |
+| [query_prepared](examples/query_prepared/) | Explicit prepared statements and cached plans. |
+| [query_mutations](examples/query_mutations/) | SQL++ INSERT, UPDATE, array changes, UPSERT, and DELETE. |
+| [query_retry_policy](examples/query_retry_policy/) | Retry policy configuration; policy-based retries are not implemented. |
+
+For a local Couchbase server and the HTTP API:
+
+```sh
+cd examples/kemal_api
+docker compose up -d --wait couchbase
+docker compose run --rm couchbase-init
+shards install
+crystal run setup.cr
+crystal run src/main.cr
+```
+
+The API listens at `http://127.0.0.1:3000`. See its
+[README](examples/kemal_api/README.md) for endpoint examples, configuration, and
+spec commands. The same database supports the other examples:
+
+```sh
+cd ../query_basics
+shards install
+crystal run example.cr
+```
+
+CLI examples accept `COUCHBASE_URL` (default
+`couchbase://Administrator:password@127.0.0.1/commerce`),
+`COUCHBASE_SCOPE`, and `COUCHBASE_COLLECTION` (both `_default`). Query examples
+also accept `COUCHBASE_QUERY_URL` for a separate Query endpoint. They create
+their own data, clean up their UUID keys, and do not require a sample dataset.

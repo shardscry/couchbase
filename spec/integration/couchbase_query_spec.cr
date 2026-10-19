@@ -1,11 +1,13 @@
 require "../spec_helper"
-require "../../examples/shared/methods"
+require "../helpers/query_fixtures"
+
+private alias Fixtures = CouchBase::SpecHelpers::QueryFixtures
 
 private alias KV = CouchBase::KV
 private alias CB = CouchBase
 private alias Query = CouchBase::Query
 private alias Couchbase = CouchBase::SpecHelpers::CouchbaseIntegrationHelpers
-private alias User = CouchBaseExamples::Structs::User
+private alias User = Fixtures::User
 
 private struct UserRow
   include JSON::Serializable
@@ -122,8 +124,8 @@ describe "Couchbase Query integration" do
     )
 
     begin
-      users = CouchBaseExamples.seed_query_users(kv)
-      keys = CouchBaseExamples.query_user_keys(users)
+      users = Fixtures.seed_query_users(kv)
+      keys = Fixtures.query_user_keys(users)
       active_users = users.select(&.active?)
       inactive_users = users.reject(&.active?)
 
@@ -147,16 +149,16 @@ describe "Couchbase Query integration" do
       client_result.rows.map(&.["id"].as_s).sort!.should eq(active_users.map(&.id).sort!)
       cluster_result.rows.map(&.["id"].as_s).sort!.should eq(inactive_users.map(&.id).sort!)
     ensure
-      CouchBaseExamples.delete_query_users(kv, users)
+      Fixtures.delete_query_users(kv, users)
     end
   end
 
-  it "queries seeded example user documents" do
+  it "queries seeded user documents" do
     users = [] of User
 
     begin
-      users = CouchBaseExamples.seed_query_users(kv)
-      keys = CouchBaseExamples.query_user_keys(users)
+      users = Fixtures.seed_query_users(kv)
+      keys = Fixtures.query_user_keys(users)
       active_users = users.select(&.active?)
 
       result = with_query_retry do
@@ -180,16 +182,16 @@ describe "Couchbase Query integration" do
         row["active"].as_bool.should be_true
       end
     ensure
-      CouchBaseExamples.delete_query_users(kv, users)
+      Fixtures.delete_query_users(kv, users)
     end
   end
 
-  it "prepares and queries seeded example user documents" do
+  it "prepares and queries seeded user documents" do
     users = [] of User
 
     begin
-      users = CouchBaseExamples.seed_query_users(kv)
-      keys = CouchBaseExamples.query_user_keys(users)
+      users = Fixtures.seed_query_users(kv)
+      keys = Fixtures.query_user_keys(users)
       inactive_users = users.reject(&.active?)
       prepared = with_query_retry do
         client.prepare(seeded_users_query, readonly: true)
@@ -213,7 +215,7 @@ describe "Couchbase Query integration" do
         row["active"].as_bool.should be_false
       end
     ensure
-      CouchBaseExamples.delete_query_users(kv, users)
+      Fixtures.delete_query_users(kv, users)
     end
   end
 
@@ -221,8 +223,8 @@ describe "Couchbase Query integration" do
     users = [] of User
 
     begin
-      users = CouchBaseExamples.seed_query_users(kv)
-      keys = CouchBaseExamples.query_user_keys(users)
+      users = Fixtures.seed_query_users(kv)
+      keys = Fixtures.query_user_keys(users)
       active_users = users.select(&.active?)
 
       rows = with_query_retry do
@@ -255,7 +257,7 @@ describe "Couchbase Query integration" do
       streamed.each(&.active?.should be_true)
       result.rows.should be_empty
     ensure
-      CouchBaseExamples.delete_query_users(kv, users)
+      Fixtures.delete_query_users(kv, users)
     end
   end
 
@@ -283,8 +285,8 @@ describe "Couchbase Query integration" do
       cluster_with_defaults.bucket = config.bucket
       cluster_with_defaults.scope = "_default"
 
-      users = CouchBaseExamples.seed_query_users(kv)
-      keys = CouchBaseExamples.query_user_keys(users)
+      users = Fixtures.seed_query_users(kv)
+      keys = Fixtures.query_user_keys(users)
       active_users = users.select(&.active?)
 
       client_rows = with_query_retry do
@@ -313,7 +315,7 @@ describe "Couchbase Query integration" do
       client_rows.each(&.active?.should be_true)
       cluster_rows.each(&.active?.should be_true)
     ensure
-      CouchBaseExamples.delete_query_users(kv, users)
+      Fixtures.delete_query_users(kv, users)
       default_client.try(&.close)
       default_cluster.try(&.close)
     end
@@ -323,7 +325,7 @@ end
 private def seeded_users_query : String
   <<-N1QL
     SELECT META(u).id AS doc_key, u.id, u.type, u.name, u.email, u.active
-    FROM #{CouchBaseExamples.n1ql_collection} AS u
+    FROM #{Fixtures.n1ql_collection} AS u
     USE KEYS $keys
     WHERE u.type = $type AND u.active = $active
     ORDER BY u.name

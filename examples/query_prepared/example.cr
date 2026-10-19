@@ -1,54 +1,40 @@
-require "../shared/methods"
+require "couchbase"
+require "uuid"
+require "./user"
 
-private alias Examples = CouchBaseExamples
-private alias User = CouchBaseExamples::Structs::User
-private alias UserRow = CouchBaseExamples::Structs::UserRow
-
-kv_client = Examples.open_kv_client
-client = Examples.open_query_client
-users = [] of User
+uri = ENV["COUCHBASE_URL"]? || "couchbase://Administrator:password@127.0.0.1/commerce"
+query_uri = ENV["COUCHBASE_QUERY_URL"]? || uri
+kv_client = CouchBase::KV::Client.from_string(uri)
+client = CouchBase::Query::Client.from_string(query_uri)
+scope = ENV["COUCHBASE_SCOPE"]? || "_default"
+collection = ENV["COUCHBASE_COLLECTION"]? || "_default"
+kv_client.scope = scope
+client.scope = scope
+users = kv_client.collection(collection)
+keyspace = "`#{collection.gsub("`", "``")}`"
+keys = [] of String
+statement = <<-SQL
+  SELECT META(u).id AS id, u.name, u.email, u.active
+  FROM #{keyspace} AS u USE KEYS $ids
+  WHERE u.active = $active
+  ORDER BY u.name
+  SQL
 
 begin
-  users = Examples.seed_query_users(kv_client)
-  keys = Examples.query_user_keys(users)
-  statement = <<-N1QL
-    SELECT META(u).id AS doc_key, u.id, u.type, u.name, u.email, u.active
-    FROM #{Examples.n1ql_collection} AS u
-    USE KEYS $keys
-    WHERE u.type = $type AND u.active = $active
-    ORDER BY u.email
-    N1QL
-
-  prepared = client.prepare(
-    statement,
-    query_context: Examples.query_context,
-    readonly: true,
-  )
-  active = client.execute_prepared(
-    prepared,
-    named_args: {keys: keys, type: "User", active: true},
-    query_context: Examples.query_context,
-    readonly: true,
-  )
-  inactive = client.query(
-    statement,
-    named_args: {keys: keys, type: "User", active: false},
-    query_context: Examples.query_context,
-    readonly: true,
-    adhoc: false,
-  )
-
-  puts "execute_prepared active users"
-  active.each_row_as(UserRow) do |row|
-    puts "#{row.doc_key} #{row.name} <#{row.email}> active=#{row.active?}"
+  %w[Ada Grace Katherine].each_with_index do |name, index|
+    id = UUID.random.to_s
+    keys << id
+    users.set(id, User.new(id, name, "#{name.downcase}@example.com", index.even?))
   end
 
-  puts "adhoc: false inactive users"
-  inactive.each_row_as(UserRow) do |row|
-    puts "#{row.doc_key} #{row.name} <#{row.email}> active=#{row.active?}"
-  end
+  prepared = client.prepare(statement, readonly: true)
+  result = client.execute_prepared(prepared, named_args: {ids: keys, active: true}, readonly: true)
+  result.each_row_as(User) { |user| puts "Prepared: #{user.name}" }
+
+  cached = client.query(statement, named_args: {ids: keys, active: false}, readonly: true, adhoc: false)
+  cached.each_row_as(User) { |user| puts "Cached plan: #{user.name}" }
 ensure
-  Examples.delete_query_users(kv_client, users)
-  kv_client.close rescue nil
-  client.close rescue nil
+  keys.each { |id| users.delete(id) rescue nil }
+  kv_client.close
+  client.close
 end

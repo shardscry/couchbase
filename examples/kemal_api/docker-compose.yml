@@ -1,0 +1,29 @@
+services:
+  couchbase:
+    image: couchbase:community-7.6.0
+    platform: linux/amd64
+    ports:
+      - "127.0.0.1:8091:8091"
+      - "127.0.0.1:8093:8093"
+      - "127.0.0.1:11210:11210"
+    volumes:
+      - couchbase-data:/opt/couchbase/var
+    healthcheck:
+      test: ["CMD-SHELL", "code=$$(curl -s -o /dev/null -w '%{http_code}' http://localhost:8091/pools); [ \"$$code\" = 200 ] || [ \"$$code\" = 401 ]"]
+      interval: 5s
+      timeout: 3s
+      retries: 60
+
+  couchbase-init:
+    image: couchbase:community-7.6.0
+    platform: linux/amd64
+    depends_on:
+      couchbase:
+        condition: service_healthy
+    volumes:
+      - ./docker/init.sh:/setup/init.sh:ro
+    entrypoint: ["/bin/bash", "/setup/init.sh"]
+    restart: "no"
+
+volumes:
+  couchbase-data:

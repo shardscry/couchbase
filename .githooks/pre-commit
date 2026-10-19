@@ -11,8 +11,8 @@ set -euo pipefail
 export CRYSTAL_CACHE_DIR="${CRYSTAL_CACHE_DIR:-.crystal-cache}"
 mkdir -p "$CRYSTAL_CACHE_DIR"
 
-echo "[pre-commit] crystal tool format --check"
-crystal tool format --check
+echo "[pre-commit] crystal tool format --check --exclude lib --exclude 'examples/*/lib'"
+crystal tool format --check --exclude lib --exclude 'examples/*/lib'
 
 staged_crystal_files=()
 while IFS= read -r path; do
@@ -25,8 +25,8 @@ if ((${#staged_crystal_files[@]})); then
     exit 1
   fi
 
-  echo "[pre-commit] bin/ameba ${staged_crystal_files[*]}"
-  bin/ameba "${staged_crystal_files[@]}"
+  echo "[pre-commit] bin/ameba"
+  bin/ameba
 else
   echo "[pre-commit] skipping ameba (no staged Crystal files)"
 fi

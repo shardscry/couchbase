@@ -34,6 +34,33 @@ jobs:
       - name: Run specs
         run: crystal spec --error-trace --tap
 
+  examples:
+    name: standalone examples
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: crystal-lang/install-crystal@v1
+        with:
+          crystal: latest
+
+      - name: Check formatting
+        run: crystal tool format --check --exclude lib --exclude 'examples/*/lib'
+
+      - name: Install and build each example independently
+        run: |
+          for example in examples/*; do
+            (
+              cd "$example"
+              shards install --frozen
+              shards build
+            )
+          done
+
+      - name: Run Kemal HTTP specs
+        working-directory: examples/kemal_api
+        run: crystal spec --error-trace --tap
+
   coverage:
     name: coverage
     runs-on: ubuntu-24.04
@@ -203,6 +230,35 @@ jobs:
         env:
           COUCHBASE_INTEGRATION: "1"
         run: crystal spec spec/integration --error-trace --tap
+
+      - name: Install standalone example dependencies
+        run: |
+          for example in examples/*; do
+            (cd "$example" && shards install --frozen)
+          done
+
+      - name: Prepare Kemal SQL++ index
+        working-directory: examples/kemal_api
+        env:
+          COUCHBASE_COLLECTION: _default
+        run: crystal run setup.cr --error-trace
+
+      - name: Run Kemal API specs against Couchbase
+        working-directory: examples/kemal_api
+        env:
+          COUCHBASE_INTEGRATION: "1"
+          COUCHBASE_COLLECTION: _default
+        run: crystal spec --error-trace --tap
+
+      - name: Run standalone CLI examples against Couchbase
+        env:
+          COUCHBASE_URL: couchbase://Administrator:password@127.0.0.1/default
+        run: |
+          for example in examples/*; do
+            if [ "$(basename "$example")" != kemal_api ]; then
+              (cd "$example" && crystal run example.cr --error-trace)
+            fi
+          done
 
       - name: Dump Couchbase logs on failure
         if: failure()

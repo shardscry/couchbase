@@ -1,0 +1,5 @@
+version: 2.0
+shards:
+  couchbase:
+    git: https://github.com/shardscry/couchbase.git
+    version: 0.0.5

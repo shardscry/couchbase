@@ -1,10 +1,12 @@
 require "../spec_helper"
-require "../../examples/shared/methods"
+require "../helpers/query_fixtures"
+
+private alias Fixtures = CouchBase::SpecHelpers::QueryFixtures
 
 private alias CursorKV = CouchBase::KV
 private alias CursorQuery = CouchBase::Query
 private alias CursorCouchbase = CouchBase::SpecHelpers::CouchbaseIntegrationHelpers
-private alias CursorUser = CouchBaseExamples::Structs::User
+private alias CursorUser = Fixtures::User
 
 private struct CursorUserRow
   include JSON::Serializable
@@ -61,12 +63,12 @@ describe "Couchbase Query cursor integration" do
     end
   end
 
-  it "streams seeded example user documents with query_cursor" do
+  it "streams seeded user documents with query_cursor" do
     users = [] of CursorUser
 
     begin
-      users = CouchBaseExamples.seed_query_users(kv)
-      keys = CouchBaseExamples.query_user_keys(users)
+      users = Fixtures.seed_query_users(kv)
+      keys = Fixtures.query_user_keys(users)
       active_users = users.select(&.active?)
       cursor_rows = [] of CursorUserRow
       cursor_result = with_cursor_query_retry do
@@ -87,7 +89,7 @@ describe "Couchbase Query cursor integration" do
       cursor_result.rows.should be_empty
       cursor_result.status.should eq("success")
     ensure
-      CouchBaseExamples.delete_query_users(kv, users)
+      Fixtures.delete_query_users(kv, users)
     end
   end
 end

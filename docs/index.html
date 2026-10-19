@@ -482,6 +482,47 @@ client.scope <span class="o">=</span> <span class="s">&quot;ecommerce_shop&quot;
 rows <span class="o">=</span> client.query(
   <span class="s">&quot;SELECT META(u).id AS doc_key, u.name FROM users AS u LIMIT 5&quot;</span>,
 )</code></pre>
+<h2><a id="examples" class="anchor" href="#examples">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>Examples</h2>
+<p>Each folder in <a href="examples/"><code>examples/</code></a> is a standalone Crystal application with
+its own <code>shard.yml</code>, locked dependencies, README, and local models. Copy any
+folder elsewhere and run <code>shards install</code> followed by <code>shards build</code>. Each
+example's README includes its run command.
+Examples use the published CouchBase shard and require no shared example files.</p>
+<p>| Example | Demonstrates |
+| --- | --- |
+| <a href="examples/kemal_api/">kemal_api</a> | Kemal REST <code>/users</code>, UUID keys, SQL++ pagination, and HTTP/database specs. |
+| <a href="examples/kv_basics/">kv_basics</a> | Raw values and typed JSON documents in collections. |
+| <a href="examples/kv_expiration/">kv_expiration</a> | Expiration, touch, and atomic get-and-touch. |
+| <a href="examples/kv_cluster/">kv_cluster</a> | KV connection pools and seed failover. |
+| <a href="examples/cluster_probe/">cluster_probe</a> | TCP reachability of service endpoints. |
+| <a href="examples/kv_endpoint_from_cluster/">kv_endpoint_from_cluster</a> | Connecting to a reachable KV endpoint. |
+| <a href="examples/query_basics/">query_basics</a> | Parameters, typed rows, and row iteration. |
+| <a href="examples/query_cursor/">query_cursor</a> | Query cluster seeds and streaming typed rows without buffering the result. |
+| <a href="examples/query_prepared/">query_prepared</a> | Explicit prepared statements and cached plans. |
+| <a href="examples/query_mutations/">query_mutations</a> | SQL++ INSERT, UPDATE, array changes, UPSERT, and DELETE. |
+| <a href="examples/query_retry_policy/">query_retry_policy</a> | Retry policy configuration; policy-based retries are not implemented. |</p>
+<p>For a local Couchbase server and the HTTP API:</p>
+<pre><code class="language-sh">cd examples/kemal_api
+docker compose up -d --wait couchbase
+docker compose run --rm couchbase-init
+shards install
+crystal run setup.cr
+crystal run src/main.cr</code></pre>
+<p>The API listens at <code>http://127.0.0.1:3000</code>. See its
+<a href="examples/kemal_api/README.md">README</a> for endpoint examples, configuration, and
+spec commands. The same database supports the other examples:</p>
+<pre><code class="language-sh">cd ../query_basics
+shards install
+crystal run example.cr</code></pre>
+<p>CLI examples accept <code>COUCHBASE_URL</code> (default
+<code>couchbase://Administrator:password@127.0.0.1/commerce</code>),
+<code>COUCHBASE_SCOPE</code>, and <code>COUCHBASE_COLLECTION</code> (both <code>_default</code>). Query examples
+also accept <code>COUCHBASE_QUERY_URL</code> for a separate Query endpoint. They create
+their own data, clean up their UUID keys, and do not require a sample dataset.</p>
 </div>
 </body>
 </html>

@@ -1,135 +1,40 @@
-require "../shared/methods"
+require "couchbase"
+require "uuid"
 
-private alias Examples = CouchBaseExamples
-private alias User = CouchBaseExamples::Structs::User
-
-kv_client = Examples.open_kv_client
-client = Examples.open_query_client
-cluster_client = Examples.open_query_cluster
-users = [] of User
-insert_id = "User:#{ULID.generate}"
-upsert_id = "User:#{ULID.generate}"
-mutation_ids = [insert_id, upsert_id]
+uri = ENV["COUCHBASE_QUERY_URL"]? || ENV["COUCHBASE_URL"]? || "couchbase://Administrator:password@127.0.0.1/commerce"
+client = CouchBase::Query::Client.from_string(uri)
+client.scope = ENV["COUCHBASE_SCOPE"]? || "_default"
+collection = ENV["COUCHBASE_COLLECTION"]? || "_default"
+keyspace = "`#{collection.gsub("`", "``")}`"
+id = UUID.random.to_s
+document = {name: "Ada", active: true, events: [{name: "welcome", done: false}]}
 
 begin
-  mutation_ids.each { |id| kv_client.delete(id) rescue nil }
-  users = Examples.seed_query_users(kv_client)
-  update_id = users.first.id
-  array_update_id = users[1].id
-  inserted_doc = {
-    id:     insert_id,
-    type:   "User",
-    name:   "Inserted User",
-    email:  "inserted.user@example.com",
-    active: true,
-    events: [
-      {name: "signup", done: false},
-      {name: "welcome", done: false},
-    ],
-  }
-  upserted_doc = {
-    id:     upsert_id,
-    type:   "User",
-    name:   "Upserted User",
-    email:  "upserted.user@example.com",
-    active: false,
-    events: [
-      {name: "signup", done: true},
-      {name: "welcome", done: false},
-    ],
-  }
-  insert_statement = <<-SQL
-    INSERT INTO #{Examples.n1ql_collection} (KEY, VALUE)
-    VALUES ($id, $doc)
-    RETURNING META().id AS doc_key, type, name, active
-    SQL
-  update_statement = <<-SQL
-    UPDATE #{Examples.n1ql_collection} AS u
-    USE KEYS $id
-    SET u.active = $active
-    WHERE u.type = $type
-    RETURNING META(u).id AS doc_key, u.id, u.type, u.active
-    SQL
-  array_update_statement = <<-SQL
-    UPDATE #{Examples.n1ql_collection} AS u
-    USE KEYS $id
-    SET u.events = [
-      {"name": "signup", "done": false},
-      {"name": "welcome", "done": false}
-    ]
-    WHERE u.type = $type
-    RETURNING META(u).id AS doc_key, u.events
-    SQL
-  loop_update_statement = <<-SQL
-    UPDATE #{Examples.n1ql_collection} AS u
-    USE KEYS $id
+  inserted = client.query("INSERT INTO #{keyspace} (KEY, VALUE) VALUES ($id, $doc) RETURNING META().id AS id, name",
+    named_args: {id: id, doc: document})
+  puts "INSERT: #{inserted.rows.to_json}"
+
+  updated = client.query("UPDATE #{keyspace} AS u USE KEYS $id SET u.active = $active RETURNING u.name, u.active",
+    named_args: {id: id, active: false})
+  puts "UPDATE: #{updated.rows.to_json}"
+
+  events = client.query(<<-SQL, named_args: {id: id, event: "welcome"})
+    UPDATE #{keyspace} AS u USE KEYS $id
     SET event.done = true FOR event IN u.events WHEN event.name = $event END
-    WHERE u.type = $type
-    RETURNING META(u).id AS doc_key, u.events
+    RETURNING u.events
     SQL
-  upsert_statement = <<-SQL
-    UPSERT INTO #{Examples.n1ql_collection} (KEY, VALUE)
-    VALUES ($id, $doc)
-    RETURNING META().id AS doc_key, type, name, active
-    SQL
-  delete_statement = <<-SQL
-    DELETE FROM #{Examples.n1ql_collection} AS u
-    USE KEYS $ids
-    RETURNING META(u).id AS doc_key
-    SQL
+  puts "Array mutation: #{events.rows.to_json}"
 
-  inserted = client.query(
-    insert_statement,
-    named_args: {id: insert_id, doc: inserted_doc},
-    query_context: Examples.query_context,
-  )
-  puts "INSERT"
-  inserted.rows.each { |row| puts row.to_json }
+  upserted = client.query("UPSERT INTO #{keyspace} (KEY, VALUE) VALUES ($id, $doc) RETURNING name",
+    named_args: {id: id, doc: document.merge({name: "Grace"})})
+  puts "UPSERT: #{upserted.rows.to_json}"
 
-  updated = client.query(
-    update_statement,
-    named_args: {id: update_id, type: "User", active: false},
-    bucket: Examples::BUCKET,
-    scope: Examples::QUERY_SCOPE,
-  )
-  puts "UPDATE"
-  updated.rows.each { |row| puts row.to_json }
-
-  array_updated = client.query(
-    array_update_statement,
-    named_args: {id: array_update_id, type: "User"},
-    query_context: Examples.query_context,
-  )
-  puts "SET array field"
-  array_updated.rows.each { |row| puts row.to_json }
-
-  loop_updated = client.query(
-    loop_update_statement,
-    named_args: {id: array_update_id, type: "User", event: "welcome"},
-    query_context: Examples.query_context,
-  )
-  puts "SET ... FOR ... END"
-  loop_updated.rows.each { |row| puts row.to_json }
-
-  upserted = cluster_client.query(
-    upsert_statement,
-    named_args: {id: upsert_id, doc: upserted_doc},
-    query_context: Examples.query_context,
-  )
-  puts "UPSERT"
-  upserted.rows.each { |row| puts row.to_json }
-
-  deleted = cluster_client.query(
-    delete_statement,
-    named_args: {ids: mutation_ids},
-    query_context: Examples.query_context,
-  )
-  puts "DELETE"
-  deleted.rows.each { |row| puts row.to_json }
+  deleted = client.query("DELETE FROM #{keyspace} AS u USE KEYS $id RETURNING META(u).id AS id", named_args: {id: id})
+  puts "DELETE: #{deleted.rows.to_json}"
 ensure
-  mutation_ids.each { |id| kv_client.delete(id) rescue nil }
-  Examples.delete_query_users(kv_client, users)
-  kv_client.close rescue nil
-  client.close rescue nil
-  cluster_client.close rescue nil
+  begin
+    client.query("DELETE FROM #{keyspace} USE KEYS $id", named_args: {id: id})
+  ensure
+    client.close
+  end
 end

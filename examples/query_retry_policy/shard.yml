@@ -1,0 +1,14 @@
+name: couchbase_query_retry_policy_example
+version: 0.1.0
+crystal: ">= 1.20.1"
+
+targets:
+  example:
+    main: example.cr
+
+dependencies:
+  couchbase:
+    github: shardscry/couchbase
+    version: ~> 0.0.5
+
+license: MIT

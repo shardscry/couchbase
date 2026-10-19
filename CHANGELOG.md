@@ -7,6 +7,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Standalone `examples/kemal_api` with UUID-keyed user CRUD, SQL++ pagination,
+  Docker database setup, and HTTP specs that also run against real Couchbase.
+- Per-example manifests, lockfiles, local models, and run instructions for
+  every CLI example.
+
+### Changed
+- Rebuilt examples as independent applications beside `kemal_api`; removed
+  shared example helpers, environment files, and the top-level Compose setup.
+- Moved Query integration fixtures into `spec/helpers` so driver specs no longer
+  depend on examples.
+- Documented the example catalog and standalone installation in the README.
+- Split the Kemal example into dedicated routing, individual handlers, request
+  structs, entities, and repositories, with configuration beside `app.cr`.
+- Moved the Kemal entry point to `src/main.cr` and added Athena dependency
+  injection for automatic handler wiring and replaceable test repository bindings.
+- Separated the Kemal user entity from `UserRepository`, which implements the
+  generic `CouchbaseStore(T)` persistence contract; entities contain only data.
+- Added declarative injection in each concrete user handler with
+  `inject user_repository`, exposing `@user_repository` without manual constructors.
+- Made `Handlers::Base` an includable HTTP helper module and separated shared
+  UUID lookup into `Handlers::UserLookup`.
+
 ## [0.0.5] - 2026-10-19
 
 ### Standalone release

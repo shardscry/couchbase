@@ -10,14 +10,12 @@
 
 .DS_Store
 .env*
-!examples/.env
 .envrc
 .crystal-cache
 /.cache/
 /coverage/
 /bin/ameba
 /bin/ameba.cr
-examples/volumes/
 
 .gitconfig
 .obsidian/
