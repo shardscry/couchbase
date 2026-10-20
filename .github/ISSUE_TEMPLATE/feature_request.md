@@ -1,28 +1,23 @@
 ---
 name: Feature request
-about: Suggest an idea or improvement for CouchBase
+about: Suggest an improvement to the CouchBase shard
 title: "[FEATURE] <short summary>"
 labels: feature
 assignees: num8er
 ---
 
-<!--
-Thanks for proposing a feature! The more context you provide,
-the easier it is to evaluate and prioritize the idea.
--->
-
 ## Problem
 
-<!--
-What problem does this solve? Who feels the pain, and when?
-e.g. "When connecting to a Capella cluster, there's no way to ..."
--->
+<!-- Describe the use case and the limitation in the current shard. -->
+
+## Affected area
+
+<!-- KV, Query/SQL++, cluster discovery, TLS, or another area.
+Include relevant Couchbase Server/Capella and shard versions. -->
 
 ## Proposed solution
 
-<!--
-How would you like CouchBase to behave? A short API sketch helps a lot.
--->
+<!-- Describe the desired behavior. Include a small Crystal API example if helpful. -->
 
 ```crystal
 
@@ -32,12 +27,10 @@ How would you like CouchBase to behave? A short API sketch helps a lot.
 
 <!-- Other approaches you thought about and why you set them aside. -->
 
-## Scope & impact
+## Compatibility
 
-- **Affected services:** <!-- e.g. KV, Query, Management, all -->
-- **Breaking change?** <!-- yes / no — and why -->
-- **Backwards compatible path:** <!-- if yes, how do users migrate? -->
+<!-- Note any expected changes to existing public APIs or behavior and a migration path. -->
 
 ## Additional context
 
-<!-- Links to Couchbase docs, RFCs, related issues, mockups, screenshots. -->
+<!-- Optional: Couchbase documentation, related issues, or measurable performance goals. -->

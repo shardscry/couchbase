@@ -1,20 +1,37 @@
 ---
 name: Bug report
-about: Report a defect so we can fix it
+about: Report a reproducible defect in the CouchBase shard
 title: "[BUG] <short summary>"
 labels: bug
 assignees: num8er
 ---
 
-<!--
-Thanks for taking the time to file a bug report.
-Please fill out the sections below — the more detail you give,
-the faster we can reproduce and fix the issue.
--->
+<!-- Remove credentials, document contents, and other private data from examples and logs. -->
 
 ## Summary
 
-<!-- One or two sentences describing what is wrong. -->
+<!-- Describe the failing KV, Query, or cluster operation. -->
+
+## Environment
+
+- Shard version or commit (`CouchBase::VERSION`):
+- Crystal version (`crystal --version`):
+- Couchbase Server version or Capella deployment:
+- OS and architecture:
+- Affected service: KV / Query / cluster discovery
+- Connection: TCP / TLS; direct node / proxy / load balancer
+- Bucket, scope, collection, and relevant timeout/retry settings:
+
+<!-- For TLS issues, describe certificate trust configuration without sharing private keys. -->
+
+## Minimal reproduction
+
+<!-- Include a self-contained Crystal snippet or repository link. For Query issues,
+include SQL++, required indexes, and a small sample document when relevant. -->
+
+```crystal
+
+```
 
 ## Steps to reproduce
 
@@ -28,29 +45,12 @@ the faster we can reproduce and fix the issue.
 
 ## Actual behavior
 
-<!-- What actually happened? Paste error messages, stack traces, or logs in the block below. -->
+<!-- Describe the result and include the full error or relevant logs. -->
 
 ```text
 
 ```
 
-## Environment
+## Additional context
 
-| Key             | Value                            |
-| --------------- | -------------------------------- |
-| CouchBase version | <!-- e.g. 0.0.1 -->              |
-| Crystal version | <!-- output of `crystal --version` --> |
-| Couchbase       | <!-- e.g. Server 7.6 / Capella -->|
-| OS / arch       | <!-- e.g. macOS 15.4 arm64 -->   |
-
-## Minimal reproduction
-
-<!-- A small, self-contained snippet or repo link that reproduces the bug. -->
-
-```crystal
-
-```
-
-## Screenshots / additional context
-
-<!-- Optional: screenshots, related issues, anything else worth knowing. -->
+<!-- Optional: regression version, frequency, related issues, or a workaround. -->
